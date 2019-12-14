@@ -4,8 +4,7 @@ import json
 import os
 
 
-def to_all_formats(data, country_code, start_index):
-    base_output_dir = "output"
+def to_all_formats(data, country_code, start_index, base_output_dir):
     if not os.path.isdir(base_output_dir):
         os.mkdir(base_output_dir)
     json_file_name = "{}/result.json".format(base_output_dir)
