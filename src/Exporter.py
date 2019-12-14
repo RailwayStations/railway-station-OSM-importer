@@ -32,12 +32,12 @@ def to_all_formats(data, country_code, start_index, base_output_dir):
             else:
                 uicibnr = "NULL"
             sql_file.write(
-                "INSERT INTO stations (countryCode, id, uicibnr, title, lat, lon, active) VALUES ('{}', "
-                "{}, '{}', {}, {}, {}, 1);\n".format(
+                "INSERT INTO stations (countryCode, id, uicibnr, title, lat, lon) VALUES ('{}', "
+                "'{}', {}, {}, {}, {});\n".format(
                     country_code,
                     index,
                     uicibnr,
-                    single_line["name"],
+                    single_line["name"].replace("'", "\\'"),
                     single_line["lat"],
                     single_line["lon"],
                 )
