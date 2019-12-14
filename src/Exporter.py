@@ -19,7 +19,7 @@ def to_all_formats(data, country_code, start_index):
         writer.writeheader()
         for single_line in data:
             writer.writerow(single_line)
-        print("Created file {}".format(json_file_name))
+        print("Created file {}".format(csv_file_name))
 
     sql_file_name = "{}/result.sql".format(base_output_dir)
     with open(sql_file_name, "w") as sql_file:
@@ -33,8 +33,8 @@ def to_all_formats(data, country_code, start_index):
             else:
                 uicibnr = "NULL"
             sql_file.write(
-                "INSERT INTO countries (countryCode, id, uicibnr, title, lat, lon, active) VALUES ('{}', "
-                "{}, {}, '{}', {}, {}, 1);\n".format(
+                "INSERT INTO stations (countryCode, id, uicibnr, title, lat, lon, active) VALUES ('{}', "
+                "{}, '{}', {}, {}, {}, 1);\n".format(
                     country_code,
                     index,
                     uicibnr,
@@ -44,4 +44,4 @@ def to_all_formats(data, country_code, start_index):
                 )
             )
             index = index + 1
-        print("Created file {}".format(json_file_name))
+        print("Created file {}".format(sql_file_name))

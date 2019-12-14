@@ -12,6 +12,9 @@ if __name__ == "__main__":
         "startIndex", help="The index to start in the database", type=int
     )
     parser.add_argument(
+        "overpassQuery", help="The filters of overpass (e.g. [\"public_transport\"=\"station\"])"
+    )
+    parser.add_argument(
         "--region", nargs="+", help="Which osm region to search with overpass"
     )
 
@@ -24,6 +27,6 @@ if __name__ == "__main__":
 
     data = list()
     for region in args.region:
-        data.extend(Overpass.runFor(region))
+        data.extend(Overpass.runFor(region, args.overpassQuery))
     result = Extractor.with_data(data)
     Exporter.to_all_formats(result, args.countryCode, args.startIndex)
