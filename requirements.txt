@@ -1,1 +1,1 @@
-overpy
+overpy==0.4
