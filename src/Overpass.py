@@ -12,13 +12,14 @@ def runFor(region, overpassQuery):
     );
     out body;
     """.format(
-        region,
-        overpassQuery,
-        overpassQuery,
-        overpassQuery
+        region, overpassQuery, overpassQuery, overpassQuery
     )
     result = api.query(query)
-    print("Found {} nodes {} ways and {} relations for {}".format(len(result.nodes), len(result.ways), len(result.relations), region))
+    print(
+        "Found {} nodes {} ways and {} relations for {}".format(
+            len(result.nodes), len(result.ways), len(result.relations), region
+        )
+    )
     resulting_nodes = list()
     for node in result.nodes:
         resulting_nodes.append(

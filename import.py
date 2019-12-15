@@ -9,14 +9,16 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("countryCode", help="The country code of the region")
     parser.add_argument(
-        "overpassQuery", help="The filters of overpass (e.g. [\"public_transport\"=\"station\"])"
+        "overpassQuery",
+        help='The filters of overpass (e.g. ["public_transport"="station"])',
     )
     parser.add_argument(
         "--outputDir", help="Where to output the files", default="./output"
     )
     parser.add_argument(
         "--startIndex",
-        help="Override the index to start in the database. Otherwise the script will lookup the latest id", type=int
+        help="Override the index to start in the database. Otherwise the script will lookup the latest id",
+        type=int,
     )
     parser.add_argument(
         "--region", nargs="+", help="Which osm region to search with overpass"
@@ -35,9 +37,11 @@ if __name__ == "__main__":
     if args.startIndex is None:
         lastDatabaseId = CurrentStations.getCurrentLastDatabaseIds(args.countryCode)
         startIndex = lastDatabaseId + 1
-        print("The latest station id found for {} is {}, so the stating id will be {}".format(args.countryCode,
-                                                                                              lastDatabaseId,
-                                                                                              startIndex))
+        print(
+            "The latest station id found for {} is {}, so the stating id will be {}".format(
+                args.countryCode, lastDatabaseId, startIndex
+            )
+        )
     else:
         startIndex = args.startIndex
     Exporter.to_all_formats(result, args.countryCode, startIndex, args.outputDir)
