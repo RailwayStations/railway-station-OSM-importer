@@ -17,7 +17,7 @@ def to_all_formats(data, country_code, start_index, base_output_dir):
 
 def to_html_map(base_output_dir, data):
     html_file_name = "{}/result.html".format(base_output_dir)
-    HtmlRenderer.render_html('map.html', {"stations": data}, html_file_name)
+    HtmlRenderer.render_html("map.html", {"stations": data}, html_file_name)
     print_created_file(html_file_name)
 
 

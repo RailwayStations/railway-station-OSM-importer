@@ -3,7 +3,7 @@ import argparse
 
 from src import Downloader, Extractor, CurrentStations, Exporter
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("countryCode", help="The country code of the region")
     parser.add_argument(
@@ -41,4 +41,3 @@ if __name__ == '__main__':
     else:
         startIndex = args.startIndex
     Exporter.to_all_formats(result, args.countryCode, startIndex, args.outputDir)
-
