@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Map</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+   integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+   crossorigin=""/>
+    <style>
+#mapid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100%;
+}
+    </style>
+</head>
+<body>
+
+<div id="mapid"></div>
+
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+   integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+   crossorigin=""></script>
+<script>
+    function addMarker(lat, lon, name, osmId, osmType, data) {
+        var marker = L.marker([lat, lon]).addTo(stationMap);
+        var table = "<table border='0.25'>"
+        for (x in data) {
+          table += "<tr><td>" + x + "</td><td>" + data[x] + "</td></tr>";
+        }
+        table += "</table>"
+        marker.bindPopup("<b>" + name + "</b><br><a href=\"https://osm.org/" + osmType + "/" + osmId + "\">" + osmId + "</a><br>" + table);
+        return marker;
+    }
+    var stationMap = L.map('mapid').setView([51.505, -0.09], 13);
+    L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '',
+        maxZoom: 18,
+    }).addTo(stationMap);
+    var allMarkers = [];
+    {% for station in stations %}
+    allMarkers.push(addMarker({{ station.lat }}, {{ station.lon }}, '{{ station.name }}', '{{ station.osm_id }}', '{{ station.osm_type }}', {{ station|tojson }}));{% endfor %}
+    var group = new L.featureGroup(allMarkers);
+
+    stationMap.fitBounds(group.getBounds());
+</script>
+</body>
+</html>

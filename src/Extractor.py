@@ -1,6 +1,6 @@
-def get_value_or_empty(obj, search_key, resulting_key, result):
-    if search_key in obj:
-        result[resulting_key] = obj[search_key]
+def get_value_or_empty(obj, resulting_key, result):
+    if resulting_key in obj:
+        result[resulting_key] = obj[resulting_key]
     else:
         result[resulting_key] = ""
 
@@ -15,11 +15,12 @@ def with_data(data):
         if is_railway and not is_subway:
             resulting_station = dict()
 
-            get_value_or_empty(tags, "name", "name", resulting_station)
-            get_value_or_empty(station, "lat", "lat", resulting_station)
-            get_value_or_empty(station, "lon", "lon", resulting_station)
-            get_value_or_empty(tags, "uic_ref", "uic_ref", resulting_station)
-            get_value_or_empty(station, "id", "osm_id", resulting_station)
+            get_value_or_empty(tags, "name", resulting_station)
+            get_value_or_empty(station, "lat", resulting_station)
+            get_value_or_empty(station, "lon", resulting_station)
+            get_value_or_empty(tags, "uic_ref", resulting_station)
+            get_value_or_empty(station, "osm_id", resulting_station)
+            get_value_or_empty(station, "osm_type", resulting_station)
             if resulting_station["uic_ref"] == "" and resulting_station["name"] == "":
                 print(
                     "skipping as not enough data: https://osm.org/node/{}".format(

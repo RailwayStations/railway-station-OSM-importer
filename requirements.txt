@@ -1,1 +1,3 @@
 overpy==0.4
+pydriosm==1.0.17
+Jinja2==2.10.3

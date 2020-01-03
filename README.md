@@ -10,8 +10,8 @@ pip install -r requirements.txt
 ```
 An example for Luxembourg
 ```bash
-./import.py lu '["public_transport"="station"]' --region Luxembourg
+./import.py lu --region luxembourg
 ```
-The script exports 3 formats (json, csv, sql) in the `output`-directory
+The script exports 4 formats (json, csv, sql and an html map) in the `output`-directory
 
 
