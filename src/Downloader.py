@@ -1,7 +1,7 @@
 import pydriosm as dri
 
 from src.IgnoreFile import IgnoreFile
-from src.ProblemDetector import detect_potential_problems
+from src.ProblemDetector import detect_potential_problems, report_missing_name
 
 
 def downloadOsm(region: str, ignore_file: IgnoreFile):
@@ -30,7 +30,7 @@ def downloadOsm(region: str, ignore_file: IgnoreFile):
             name = type_instance["name"]
             if not ignore_file.should_be_ignored(osm_type, osm_id):
                 if tags is not None:
-                    if is_train_station(tags):
+                    if is_train_station(osm_type, osm_id, name, tags):
                         railway = tags["railway"]
                         if railway == "halt" or railway == "station":
                             if not osm_id:
@@ -54,7 +54,10 @@ def get_osm_id(type_instance):
         return type_instance.osm_way_id
 
 
-def is_train_station(tags):
+def is_train_station(osm_type, osm_id, name, tags):
+    if name is None or name == "":
+        report_missing_name(osm_type, osm_id)
+        return False
     return (
         "public_transport" in tags
         and tags["public_transport"] == "station"

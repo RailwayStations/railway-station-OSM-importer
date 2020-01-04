@@ -39,7 +39,7 @@ def to_sql(base_output_dir, data, country_code, start_index):
                     country_code,
                     index,
                     uicibnr,
-                    single_line["name"].replace("'", "\\'"),
+                    "" if single_line["name"] is None else single_line["name"].replace("'", "\\'"),
                     single_line["lat"],
                     single_line["lon"],
                 )
