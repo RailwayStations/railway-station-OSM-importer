@@ -33,11 +33,22 @@
         marker.bindPopup("<b>" + name + "</b><br><a href=\"https://osm.org/" + osmType + "/" + osmId + "\">" + osmId + "</a><br>" + table);
         return marker;
     }
-    var stationMap = L.map('mapid').setView([51.505, -0.09], 13);
-    L.tileLayer('https://a.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    var osmTilesDe = L.tileLayer('http://{s}.tile.openstreetmap.de/{z}/{x}/{y}.png', {
         attribution: '',
         maxZoom: 18,
-    }).addTo(stationMap);
+    });
+    var osmTiles = L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '',
+        maxZoom: 18,
+    });
+    var stationMap = L.map('mapid', {
+        layers: [osmTilesDe, osmTiles]
+    });
+    var osmTileServer = {
+        "OSM": osmTiles,
+        "OSM De": osmTilesDe
+    }
+    L.control.layers(osmTileServer).addTo(stationMap);
     var allMarkers = [];
     {% for station in stations %}
     allMarkers.push(addMarker({{ station.lat }}, {{ station.lon }}, '{{ station.name }}', '{{ station.osm_id }}', '{{ station.osm_type }}', {{ station|tojson }}));{% endfor %}

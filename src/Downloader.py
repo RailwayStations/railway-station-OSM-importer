@@ -1,7 +1,9 @@
 import pydriosm as dri
 
+from src.IgnoreFile import IgnoreFile
 
-def downloadOsm(region):
+
+def downloadOsm(region: str, ignore_file: IgnoreFile):
     osm_region = dri.read_osm_pbf(
         region,
         data_dir=None,
@@ -23,23 +25,38 @@ def downloadOsm(region):
         for index, type_instance in osm_region[type_collection].iterrows():
             tags = type_instance["other_tags"]
             if tags is not None:
-                if (
-                    "public_transport" in tags
-                    and tags["public_transport"] == "station"
-                    and "railway" in tags
-                ):
+                if is_train_station(tags):
                     railway = tags["railway"]
                     if railway == "halt" or railway == "station":
-                        coordinates = extract_coordinates(
-                            type_instance, type_collection
-                        )
-                        osm_id = type_instance.osm_id
-                        name = type_instance["name"]
                         osm_type = get_osm_type(type_collection)
-                        resulting_nodes.append(
-                            station(osm_id, name, coordinates, tags, osm_type)
-                        )
+                        osm_id = get_osm_id(type_instance)
+                        if not osm_id:
+                            print("unable to determine osm id for:")
+                            print(type_instance)
+                        if not ignore_file.should_be_ignored(osm_type, osm_id):
+                            coordinates = extract_coordinates(
+                                type_instance, type_collection
+                            )
+                            name = type_instance["name"]
+                            resulting_nodes.append(
+                                station(osm_id, name, coordinates, tags, osm_type)
+                            )
     return resulting_nodes
+
+
+def get_osm_id(type_instance):
+    if type_instance.osm_id:
+        return type_instance.osm_id
+    else:
+        return type_instance.osm_way_id
+
+
+def is_train_station(tags):
+    return (
+        "public_transport" in tags
+        and tags["public_transport"] == "station"
+        and "railway" in tags
+    )
 
 
 def get_osm_type(type_collection):

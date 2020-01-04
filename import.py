@@ -2,6 +2,7 @@
 import argparse
 
 from src import Downloader, Extractor, CurrentStations, Exporter
+from src.IgnoreFile import IgnoreFile
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -15,6 +16,10 @@ if __name__ == "__main__":
         type=int,
     )
     parser.add_argument(
+        "--ignoreFile",
+        help="A file containing osm type/id to be ignored (e.g. false positives)",
+    )
+    parser.add_argument(
         "--region", nargs="+", help="Which osm region from Geofabrik to search"
     )
 
@@ -25,9 +30,11 @@ if __name__ == "__main__":
         )
     )
 
+    ignore_file = IgnoreFile(args.ignoreFile)
+
     data = list()
     for region in args.region:
-        data.extend(Downloader.downloadOsm(region))
+        data.extend(Downloader.downloadOsm(region, ignore_file))
 
     result = Extractor.with_data(data)
     if args.startIndex is None:

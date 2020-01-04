@@ -14,4 +14,4 @@ An example for Luxembourg
 ```
 The script exports 4 formats (json, csv, sql and an html map) in the `output`-directory
 
-
+To ignore false positives, add the parameter `--ignoreFile` with the path to a file with ignored osm type/id. (see the file `ignore-exmaple.txt` for the format)
