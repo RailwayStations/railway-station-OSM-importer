@@ -1,6 +1,7 @@
 import pydriosm as dri
 
 from src.IgnoreFile import IgnoreFile
+from src.ProblemDetector import detect_potential_problems
 
 
 def downloadOsm(region: str, ignore_file: IgnoreFile):
@@ -24,23 +25,25 @@ def downloadOsm(region: str, ignore_file: IgnoreFile):
         print("Looking in {} for railway stations".format(type_collection))
         for index, type_instance in osm_region[type_collection].iterrows():
             tags = type_instance["other_tags"]
-            if tags is not None:
-                if is_train_station(tags):
-                    railway = tags["railway"]
-                    if railway == "halt" or railway == "station":
-                        osm_type = get_osm_type(type_collection)
-                        osm_id = get_osm_id(type_instance)
-                        if not osm_id:
-                            print("unable to determine osm id for:")
-                            print(type_instance)
-                        if not ignore_file.should_be_ignored(osm_type, osm_id):
+            osm_type = get_osm_type(type_collection)
+            osm_id = get_osm_id(type_instance)
+            name = type_instance["name"]
+            if not ignore_file.should_be_ignored(osm_type, osm_id):
+                if tags is not None:
+                    if is_train_station(tags):
+                        railway = tags["railway"]
+                        if railway == "halt" or railway == "station":
+                            if not osm_id:
+                                print("unable to determine osm id for:")
+                                print(type_instance)
                             coordinates = extract_coordinates(
                                 type_instance, type_collection
                             )
-                            name = type_instance["name"]
                             resulting_nodes.append(
                                 station(osm_id, name, coordinates, tags, osm_type)
                             )
+                    else:
+                        detect_potential_problems(osm_type, osm_id, name, tags)
     return resulting_nodes
 
 
