@@ -55,14 +55,13 @@ def get_osm_id(type_instance):
 
 
 def is_train_station(osm_type, osm_id, name, tags):
-    if name is None or name == "":
+    is_public_transport = "public_transport" in tags and (tags["public_transport"] == "station" or tags["public_transport"] == "stop_position")
+    result = is_public_transport and "railway" in tags
+    if result and (name is None or name == ""):
         report_missing_name(osm_type, osm_id)
         return False
-    return (
-        "public_transport" in tags
-        and tags["public_transport"] == "station"
-        and "railway" in tags
-    )
+    return result
+
 
 
 def get_osm_type(type_collection):
@@ -71,9 +70,9 @@ def get_osm_type(type_collection):
     if type_collection == "lines":
         return "way"
     if (
-        type_collection == "multilinestrings"
-        or type_collection == "multipolygons"
-        or type_collection == "other_relations"
+            type_collection == "multilinestrings"
+            or type_collection == "multipolygons"
+            or type_collection == "other_relations"
     ):
         return "relation"
 
