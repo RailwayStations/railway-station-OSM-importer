@@ -7,6 +7,10 @@ from src import HtmlRenderer
 
 
 def to_all_formats(data, country_code, start_index, base_output_dir):
+    if len(data) == 0:
+        print("No data found")
+        return
+
     if not os.path.isdir(base_output_dir):
         os.mkdir(base_output_dir)
     toJson(base_output_dir, data)

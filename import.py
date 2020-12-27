@@ -8,7 +8,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("countryCode", help="The country code of the region")
     parser.add_argument(
-        "--outputDir", help="Where to output the files", default="./output"
+        "--outputDir", help="Where to output the files (default: ./output)", default="./output"
     )
     parser.add_argument(
         "--startIndex",
@@ -34,7 +34,7 @@ if __name__ == "__main__":
 
     data = list()
     for region in args.region:
-        data.extend(Downloader.downloadOsm(region, ignore_file))
+        data.extend(Downloader.download_osm(region, ignore_file))
 
     result = Extractor.with_data(data)
     if args.startIndex is None:

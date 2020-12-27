@@ -1,35 +1,28 @@
-import pydriosm as dri
+import json
+import re
+
+from pydriosm import GeofabrikReader
 
 from src.IgnoreFile import IgnoreFile
 from src.ProblemDetector import detect_potential_problems, report_missing_name
 
 
-def downloadOsm(region: str, ignore_file: IgnoreFile):
-    osm_region = dri.read_osm_pbf(
-        region,
-        data_dir=None,
-        parsed=True,
-        file_size_limit=50,
-        fmt_other_tags=True,
-        fmt_single_geom=True,
-        fmt_multi_geom=True,
-        update=False,
-        download_confirmation_required=False,
-        pickle_it=True,
-        rm_osm_pbf=False,
-        verbose=True,
-    )
+def download_osm(region: str, ignore_file: IgnoreFile):
+    print("Start reading pbf file")
+    osm_region = GeofabrikReader().read_osm_pbf(region, download_confirmation_required=False, verbose=True)
+    print("Finished reading pbf file")
 
     resulting_nodes = list()
     for type_collection in osm_region:
         print("Looking in {} for railway stations".format(type_collection))
-        for index, type_instance in osm_region[type_collection].iterrows():
-            tags = type_instance["other_tags"]
+        for index, type_instance_pd in osm_region[type_collection].iterrows():
+            type_instance = json.loads(type_instance_pd[type_collection])["properties"]
+            tags = get_tags(type_instance["other_tags"])
             osm_type = get_osm_type(type_collection)
             osm_id = get_osm_id(type_instance)
             name = type_instance["name"]
             if not ignore_file.should_be_ignored(osm_type, osm_id):
-                if tags is not None:
+                if tags:
                     if is_train_station(osm_type, osm_id, name, tags):
                         railway = tags["railway"]
                         if railway == "halt" or railway == "station":
@@ -47,11 +40,21 @@ def downloadOsm(region: str, ignore_file: IgnoreFile):
     return resulting_nodes
 
 
+def get_tags(other_tags):
+    result = {}
+    if other_tags:
+        split = re.findall(r"\"[^,]+\"=>\"[^,]+\"", other_tags)
+        for entry in split:
+            key_value = re.split(r'=>', entry)
+            result[key_value[0].replace("\"", "")] = key_value[1].replace("\"", "")
+    return result
+
+
 def get_osm_id(type_instance):
-    if type_instance.osm_id:
-        return type_instance.osm_id
+    if "osm_id" in type_instance:
+        return type_instance["osm_id"]
     else:
-        return type_instance.osm_way_id
+        return type_instance["osm_way_id"]
 
 
 def is_train_station(osm_type, osm_id, name, tags):

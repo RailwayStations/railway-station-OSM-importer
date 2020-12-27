@@ -3,3 +3,4 @@ output/
 *.pyc
 dat_GeoFabrik/
 ignoreFiles/
+dat_Geofabrik/
