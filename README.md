@@ -1,5 +1,7 @@
 # OSM Importer for railway-stations.org
 
+Repository moved to: https://codeberg.org/RailwayStations/railway-station-OSM-importer
+
 This pythons scripts helps to export railway stations from osm to import them to the database of https://railway-stations.org
 
 ## How to run it
